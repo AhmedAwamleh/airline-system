@@ -1,13 +1,8 @@
-'use strict';
-
-const events = require('./events');
-
+const events = require('./events')
 const { faker } = require('@faker-js/faker');
 
 
-
 setInterval(() => {
-
   let data = {
 
     airLine: 'Royal Jordanian Airlines',
@@ -16,11 +11,12 @@ setInterval(() => {
     flightID: faker.datatype.uuid()
 
   }
-  console.log(`Manager: A filght with ID ${data.flightID} has been scheduled`);
+  console.log(`Manager: A filght with ID ${data.pilot} has been scheduled`);
   events.emit('new-flight', data);
 
-}, 1000)
+}, 10000)
+
 
 events.on('arrived', (data) => {
-  console.log(`Manager: we’re greatly thankful for the amazing flight, ${data.pilot}`)
+  console.log(`Manager: were greatly thankful for the amazing flight, ${data.pilot}`)
 });
