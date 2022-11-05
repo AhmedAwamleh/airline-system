@@ -1,39 +1,52 @@
-const events = require("./events")
-const { faker } = require('@faker-js/faker');
-require('./manager')
-require('./pilot')
 
-events.on('new-flight', (data) => {
-  console.log(`Flight {
-  event: 'new-flight',
-  time:  ${new Date().toUTCString()},
-  Details: {
-  airLine: ${data.airLine},
-  destination: ${data.destination},
-  pilot: ${data.pilot},
-  flightID: ${data.flightID}
-}`)
+const io = require('socket.io')(3002);
+const airline_io = io.of('/airline')
+
+io.on('connection', (socket) => {
+  socket.on('new-flight', (data) => {
+    io.emit('new-flight', data);
+    console.log(`Flight {
+          event: 'new-flight',
+          time: ${new Date().toUTCString()},
+          Details: {
+              airline: '${data.airline}',
+              flightID: '${data.flightID}',
+              pilot: '${data.pilot}',
+              destination: '${data.destination}',
+          }
+      }`);
+  });
+  socket.on('arrived', (data) => {
+    io.emit('arrived', data);
+    console.log(`Flight {
+          event: 'arrived',
+          time: ${new Date().toUTCString()},
+          Details: {
+              airline: '${data.airline}',
+              flightID: '${data.flightID}',
+              pilot: '${data.pilot}',
+              destination: '${data.destination}',
+          }
+      }`);
+  });
+});
+
+
+airline_io.on('connection', (socket) => {
+  console.log('airline connected')
+  socket.on('took-off', (data) => {
+    console.log(`Flight{
+    event: 'took-off',
+    time:  ${new Date().toUTCString()},
+    Details: {
+      airLine: ${data.airLine},
+      flightID: ${data.flightID}
+      pilot: ${data.pilot},
+      destination: ${data.destination},
+    }
+  }`)
+  })
 })
-events.on('took-off', (data) => {
-  console.log(`took-off {
-  event: 'took-off',
-  time:  ${new Date().toUTCString()},
-  Details: {
-  airLine: ${data.airLine},
-  destination: ${data.destination},
-  pilot: ${data.pilot},
-  flightID: ${data.flightID}
-}`)
-})
-events.on('arrived', (data) => {
-  console.log(`arrived {
-  event: 'arrived',
-  time:  ${new Date().toUTCString()},
-  Details: {
-  airLine: ${data.airLine},
-  destination: ${data.destination},
-  pilot: ${data.pilot},
-  flightID: ${data.flightID}
-}`)
-})
+
+
 

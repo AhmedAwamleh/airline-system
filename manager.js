@@ -1,4 +1,6 @@
-const events = require('./events')
+const io = require('socket.io-client')
+const host = "http://localhost:3002";
+const socket = io.connect(host)
 const { faker } = require('@faker-js/faker');
 
 
@@ -12,11 +14,11 @@ setInterval(() => {
 
   }
   console.log(`Manager: A filght with ID ${data.pilot} has been scheduled`);
-  events.emit('new-flight', data);
+  socket.emit('new-flight', data);
 
 }, 10000)
 
 
-events.on('arrived', (data) => {
+socket.on('arrived', (data) => {
   console.log(`Manager: were greatly thankful for the amazing flight, ${data.pilot}`)
 });
